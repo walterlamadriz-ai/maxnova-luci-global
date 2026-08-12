@@ -1659,9 +1659,19 @@
     text-align: center; margin-top: 14px;
     font-size: 12px; color: var(--text-muted); font-weight: 300; letter-spacing: 0.05em;
   }
+  .form-error {
+    display: block; min-height: 0;
+    font-size: 12px; font-weight: 400; letter-spacing: 0.01em;
+    color: #f0a58c; margin-top: 6px; line-height: 1.4;
+  }
+  .form-error:empty { display: none; }
+  .form-group input.has-error,
+  .form-group textarea.has-error { border-color: #c2593a; }
+
   .form-success {
     display: none; text-align: center; padding: 32px 16px;
   }
+  .form-success h3:focus { outline: none; }
   .form-success.visible { display: block; }
   .form-success-icon {
     width: 48px; height: 48px; border: 1px solid rgba(201,168,76,0.4);
@@ -2569,12 +2579,15 @@
           <h3 class="form-title">Send us a message</h3>
           <p class="form-subtitle">Tell us about your business and market objectives. No commitment required — just a conversation.</p>
 
-          <!-- Formspree form — replace YOUR_FORM_ID with your Formspree endpoint -->
-          <form id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" novalidate>
+          <!-- To post in the background instead of opening the visitor's mail
+               client, put the endpoint in data-endpoint below, e.g.
+               data-endpoint="https://formspree.io/f/abcdwxyz" -->
+          <form id="contactForm" method="POST" novalidate data-endpoint="">
             <div class="form-row">
               <div class="form-group">
                 <label for="cf-name">Full Name *</label>
-                <input type="text" id="cf-name" name="name" placeholder="Your Name" required autocomplete="name">
+                <input type="text" id="cf-name" name="name" placeholder="Your Name" required autocomplete="name" aria-describedby="cf-name-err">
+                <span class="form-error" id="cf-name-err" role="alert"></span>
               </div>
               <div class="form-group">
                 <label for="cf-company">Company</label>
@@ -2583,7 +2596,8 @@
             </div>
             <div class="form-group">
               <label for="cf-email">Email Address *</label>
-              <input type="email" id="cf-email" name="email" placeholder="you@company.com" required autocomplete="email">
+              <input type="email" id="cf-email" name="email" placeholder="you@company.com" required autocomplete="email" aria-describedby="cf-email-err">
+              <span class="form-error" id="cf-email-err" role="alert"></span>
             </div>
             <div class="form-group">
               <label for="cf-service">Area of Interest</label>
@@ -2600,7 +2614,8 @@
             </div>
             <div class="form-group">
               <label for="cf-message">Message *</label>
-              <textarea id="cf-message" name="message" placeholder="Tell us about your business, your target market, and what you're trying to achieve..." required></textarea>
+              <textarea id="cf-message" name="message" placeholder="Tell us about your business, your target market, and what you're trying to achieve..." required aria-describedby="cf-message-err"></textarea>
+              <span class="form-error" id="cf-message-err" role="alert"></span>
             </div>
             <input type="hidden" name="_subject" value="New inquiry — MaxNova &amp; Luci Global">
             <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
@@ -2615,7 +2630,7 @@
                 <polyline points="20 6 9 17 4 12"/>
               </svg>
             </div>
-            <h3>Message received.</h3>
+            <h3 tabindex="-1">Message received.</h3>
             <p>Thank you for reaching out. We'll review your inquiry and get back to you within one business day.</p>
           </div>
         </div>
@@ -2896,48 +2911,99 @@ document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe
   const submitBtn = document.getElementById('formSubmit');
   if (!form) return;
 
-  form.addEventListener('submit', async (e) => {
+  const INBOX = 'maxnovaluciglobal@gmail.com';
+  // Set this to the real endpoint to post in the background. While it is
+  // unset, submissions fall back to the visitor's mail client rather than
+  // failing silently against a placeholder URL.
+  const ENDPOINT = form.dataset.endpoint || '';
+
+  const fields = [
+    { el: form.querySelector('#cf-name'),    label: 'your name' },
+    { el: form.querySelector('#cf-email'),   label: 'your email address' },
+    { el: form.querySelector('#cf-message'), label: 'a short message' }
+  ];
+
+  function setError(f, msg) {
+    const box = document.getElementById(f.el.id + '-err');
+    f.el.setAttribute('aria-invalid', 'true');
+    f.el.classList.add('has-error');
+    if (box) box.textContent = msg;
+  }
+  function clearError(f) {
+    const box = document.getElementById(f.el.id + '-err');
+    f.el.removeAttribute('aria-invalid');
+    f.el.classList.remove('has-error');
+    if (box) box.textContent = '';
+  }
+
+  function validate() {
+    const bad = [];
+    fields.forEach(f => {
+      clearError(f);
+      const v = f.el.value.trim();
+      if (!v) {
+        setError(f, `Please enter ${f.label}.`);
+        bad.push(f);
+      } else if (f.el.type === 'email' && !f.el.checkValidity()) {
+        setError(f, 'That email address does not look right.');
+        bad.push(f);
+      }
+    });
+    return bad;
+  }
+
+  // Compose a prefilled email as the no-backend fallback.
+  function mailtoFallback() {
+    const get = id => (form.querySelector(id)?.value || '').trim();
+    const body = [
+      `Name: ${get('#cf-name')}`,
+      `Company: ${get('#cf-company') || '—'}`,
+      `Email: ${get('#cf-email')}`,
+      `Area of interest: ${get('#cf-service') || '—'}`,
+      '',
+      get('#cf-message')
+    ].join('\n');
+    window.location.href = `mailto:${INBOX}`
+      + `?subject=${encodeURIComponent('New inquiry — MaxNova & Luci Global')}`
+      + `&body=${encodeURIComponent(body)}`;
+  }
+
+  function showSuccess() {
+    form.hidden = true;
+    success.classList.add('visible');
+    success.querySelector('h3')?.focus();
+  }
+
+  form.addEventListener('submit', async e => {
     e.preventDefault();
 
-    // Basic validation
-    const name = form.querySelector('#cf-name').value.trim();
-    const email = form.querySelector('#cf-email').value.trim();
-    const message = form.querySelector('#cf-message').value.trim();
-    if (!name || !email || !message) {
-      [form.querySelector('#cf-name'), form.querySelector('#cf-email'), form.querySelector('#cf-message')]
-        .forEach(el => { if (!el.value.trim()) el.style.borderColor = 'rgba(201,100,76,0.6)'; });
+    const bad = validate();
+    if (bad.length) {
+      bad[0].el.focus();   // move focus to the first problem
       return;
     }
+
+    if (!ENDPOINT) { mailtoFallback(); return; }
 
     submitBtn.disabled = true;
     submitBtn.textContent = 'Sending…';
 
     try {
-      const res = await fetch(form.action, {
+      const res = await fetch(ENDPOINT, {
         method: 'POST',
         body: new FormData(form),
         headers: { Accept: 'application/json' }
       });
-
-      if (res.ok) {
-        form.style.display = 'none';
-        success.classList.add('visible');
-      } else {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Send Message';
-        alert('Something went wrong. Please email us directly at maxnovaluciglobal@gmail.com');
-      }
+      if (res.ok) { showSuccess(); return; }
+      throw new Error('bad status');
     } catch {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Send Message';
-      alert('Connection error. Please email us directly at maxnovaluciglobal@gmail.com');
+      mailtoFallback();   // never a dead end
     }
   });
 
-  // Reset field error color on input
-  form.querySelectorAll('input, textarea').forEach(el => {
-    el.addEventListener('input', () => { el.style.borderColor = ''; });
-  });
+  fields.forEach(f => f.el.addEventListener('input', () => clearError(f)));
 })();
 
 // ── MAGNETIC BUTTONS ──
