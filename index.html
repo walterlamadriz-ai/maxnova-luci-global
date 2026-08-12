@@ -1484,8 +1484,12 @@
   .insight-arrow::after { width: 1px; height: 12px; left: 50%; transform: translateX(-50%); }
 
   /* ── CONTACT FORM ── */
+  /* #cta still carries text-align:center from when it was a centered CTA;
+     the two-column form needs everything flush left so labels line up
+     with their inputs. */
   .contact-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;
+    text-align: left;
   }
   .contact-info .section-title { margin-bottom: 24px; }
   .contact-info p {
