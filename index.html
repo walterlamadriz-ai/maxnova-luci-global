@@ -184,12 +184,17 @@
   /* ── SELECTION ── */
   ::selection { background: rgba(255,255,255,0.16); color: var(--white); }
 
-  /* ── NOISE OVERLAY ── */
+  /* ── GRAIN / DITHER OVERLAY ──
+     Dark gradients band badly at 8-bit depth: #050608 -> #060d1f spans only a
+     few luminance steps across hundreds of pixels, so the steps show up as
+     contour stripes. This grain dithers them away.
+     It must sit ABOVE section backgrounds — at z-index 0 it was painted behind
+     .hero-bg and never touched the gradient it exists to fix. */
   body::before {
     content: '';
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    opacity: 0.4;
+    position: fixed; inset: 0; z-index: 9996; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    opacity: 0.16;
   }
 
   /* ── NAV ── */
@@ -379,10 +384,12 @@
   .hero-grid {
     position: absolute; inset: 0; pointer-events: none;
     background-image:
-      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-    background-size: 80px 80px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 80%);
+      linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px);
+    background-size: 96px 96px;
+    /* Fade the grid out earlier so it reads as texture, not as ruled lines. */
+    mask-image: radial-gradient(ellipse 70% 50% at 50% 45%, black 5%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 50% at 50% 45%, black 5%, transparent 70%);
   }
 
   #particles { position: absolute; inset: 0; }
