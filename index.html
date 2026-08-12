@@ -27,8 +27,8 @@
 <!-- Fonts: non-blocking preload -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400;1,6..96,500&family=Jost:wght@200;300;400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400;1,6..96,500&family=Jost:wght@200;300;400;500;600;700&display=swap"></noscript>
 
 <!-- Schema.org Organization -->
 <script type="application/ld+json">
@@ -72,6 +72,11 @@
     --glass-border: rgba(255,255,255,0.07);
     --gold-gradient: linear-gradient(135deg, #c9a84c, #e4c97e, #a07830);
     --blue-gradient: linear-gradient(135deg, #1e40af, #3b82f6);
+
+    --font-display: 'Bodoni Moda', var(--font-display);
+    --font-body: 'Jost', var(--font-body);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
   }
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -79,11 +84,13 @@
   html { scroll-behavior: smooth; font-size: 16px; }
 
   body {
-    font-family: 'Manrope', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-body);
     background: var(--black);
     color: var(--white);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    font-size: 1.045rem;
+    letter-spacing: 0.005em;
   }
 
   /* ── SKIP LINK (accessibility) ── */
@@ -379,7 +386,9 @@
 
   .hero-content {
     position: relative; z-index: 2;
-    text-align: center; max-width: 920px; padding: 0 24px;
+    text-align: center; max-width: 920px;
+    /* bottom padding keeps the buttons clear of the scroll indicator */
+    padding: 90px 24px 120px;
     animation: heroFadeIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
@@ -400,12 +409,27 @@
   }
 
   .hero-headline {
-    font-family: 'DM Serif Display', Georgia, serif;
-    font-size: clamp(2.8rem, 6vw, 5.2rem);
-    font-weight: 400; line-height: 1.08; letter-spacing: -0.02em;
+    font-family: var(--font-display);
+    font-size: clamp(2.9rem, 6.4vw, 5.6rem);
+    font-weight: 500; line-height: 1.02; letter-spacing: -0.035em;
     color: var(--white); margin-bottom: 28px;
-    animation: heroFadeIn 1.2s 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+    font-optical-sizing: auto;
   }
+  /* Per-line mask reveal — lines rise out from behind a clip edge */
+  /* padding+negative margin gives italic descenders room without adding visual space */
+  .line-mask {
+    display: block; overflow: hidden;
+    padding-bottom: 0.14em; margin-bottom: -0.14em;
+  }
+  .line-mask > span {
+    display: block;
+    transform: translateY(105%);
+    animation: lineRise 1.1s var(--ease-out-expo) both;
+  }
+  .line-mask:nth-of-type(1) > span { animation-delay: 0.30s; }
+  .line-mask:nth-of-type(2) > span { animation-delay: 0.40s; }
+  .line-mask:nth-of-type(3) > span { animation-delay: 0.50s; }
+  @keyframes lineRise { to { transform: translateY(0); } }
   .hero-headline em {
     font-style: italic;
     background: var(--gold-gradient);
@@ -493,12 +517,13 @@
   }
 
   .section-title {
-    font-family: 'DM Serif Display', Georgia, serif;
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    font-weight: 400; line-height: 1.12;
-    color: var(--white); letter-spacing: -0.02em;
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 4.2vw, 3.4rem);
+    font-weight: 500; line-height: 1.06;
+    color: var(--white); letter-spacing: -0.03em;
+    font-optical-sizing: auto;
   }
-  .section-title em { font-style: italic; color: var(--gold-light); }
+  .section-title em { font-style: italic; font-weight: 400; color: var(--gold-light); }
 
   /* ── DIVIDER ── */
   .gold-divider {
@@ -545,7 +570,7 @@
   .proof-stat:hover::after { width: 100%; }
   .proof-num {
     display: block;
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: clamp(2rem, 4vw, 2.8rem);
     color: var(--white); line-height: 1; margin-bottom: 8px;
   }
@@ -596,7 +621,7 @@
     background: var(--gold-gradient);
   }
   .about-card-number {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: 4rem; color: rgba(201,168,76,0.12);
     position: absolute; top: 16px; right: 24px; line-height: 1;
     pointer-events: none;
@@ -605,7 +630,7 @@
   .stat-item { margin-bottom: 32px; }
   .stat-item:last-child { margin-bottom: 0; }
   .stat-value {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: 2.6rem; color: var(--white); line-height: 1;
     margin-bottom: 6px;
   }
@@ -761,7 +786,7 @@
   }
   .stat-block:hover::after { height: 100%; }
   .stat-block-num {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: 2.8rem; line-height: 1; margin-bottom: 8px;
   }
   .stat-block-num.gold { color: var(--gold); }
@@ -779,7 +804,7 @@
     display: flex; align-items: center; gap: 32px;
   }
   .stat-large-val {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: 3.6rem; color: var(--white); flex-shrink: 0;
   }
   .stat-large-val span { color: var(--gold); }
@@ -842,7 +867,7 @@
   .process-step:hover::before { transform: scaleX(1); }
 
   .process-step-num {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: 3.2rem; color: rgba(201,168,76,0.1);
     line-height: 1; margin-bottom: 20px;
     transition: color 0.35s;
@@ -902,7 +927,7 @@
   .service-item:hover .service-num { color: rgba(201,168,76,0.2); }
 
   .service-num {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: 2.4rem; color: rgba(255,255,255,0.05);
     position: absolute; bottom: 20px; right: 20px;
     transition: color 0.35s;
@@ -947,7 +972,7 @@
     content: ''; display: block; width: 28px; height: 1px; background: var(--gold-dim);
   }
   .mid-cta-title {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: clamp(1.6rem, 3.5vw, 2.4rem);
     font-weight: 400; line-height: 1.15; color: var(--white);
     margin: 14px 0 16px; letter-spacing: -0.01em;
@@ -976,7 +1001,7 @@
     content: ''; display: block; width: 28px; height: 1px; background: var(--gold-dim);
   }
   .cta-title {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: clamp(2.2rem, 5vw, 3.8rem);
     font-weight: 400; line-height: 1.1;
     color: var(--white); margin: 16px 0 32px;
@@ -1055,6 +1080,152 @@
   .footer-social a svg { width: 14px; height: 14px; stroke: var(--text-muted); transition: stroke 0.3s; }
   .footer-social a:hover svg { stroke: var(--gold); }
 
+  /* ══ MARKET INTELLIGENCE DASHBOARD ══ */
+  #intel { padding: 130px 0; background: var(--navy); }
+  .intel-header {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    margin-bottom: 56px; align-items: end;
+  }
+  .intel-header p {
+    font-size: 0.92rem; color: var(--silver); line-height: 1.8; font-weight: 300;
+  }
+  .intel-board {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 1px; background: var(--glass-border);
+    border: 1px solid var(--glass-border);
+  }
+  .intel-panel { background: var(--navy-mid); padding: 34px 32px; position: relative; }
+  .intel-panel-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 26px; gap: 16px;
+  }
+  .intel-panel-title {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--white);
+  }
+  .intel-panel-meta {
+    font-size: 9px; letter-spacing: 0.12em; color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .intel-live {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.18em;
+    color: var(--gold); text-transform: uppercase;
+  }
+  .intel-live::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold); animation: livePulse 2s ease-in-out infinite;
+  }
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(201,168,76,0.5); }
+    50% { opacity: 0.55; box-shadow: 0 0 0 5px rgba(201,168,76,0); }
+  }
+
+  /* Growth chart */
+  .intel-chart { width: 100%; height: auto; display: block; overflow: visible; }
+  .chart-line {
+    fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: var(--len); stroke-dashoffset: var(--len);
+    transition: stroke-dashoffset 1.8s var(--ease-out-expo);
+  }
+  .visible .chart-line { stroke-dashoffset: 0; }
+  .chart-area { opacity: 0; transition: opacity 1s 0.7s ease; }
+  .visible .chart-area { opacity: 1; }
+  .chart-grid line { stroke: rgba(255,255,255,0.055); stroke-width: 1; }
+  .chart-axis-label {
+    font-family: var(--font-body); font-size: 8.5px;
+    fill: var(--text-muted); letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .chart-dot { opacity: 0; transition: opacity 0.4s 1.5s ease; }
+  .visible .chart-dot { opacity: 1; }
+  .chart-legend { display: flex; gap: 22px; margin-top: 20px; flex-wrap: wrap; }
+  .chart-legend-item {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 9.5px; letter-spacing: 0.1em; color: var(--silver);
+    text-transform: uppercase; font-weight: 500;
+  }
+  .chart-legend-swatch { width: 14px; height: 2px; border-radius: 1px; flex-shrink: 0; }
+
+  /* Sector bars */
+  .intel-bars { display: flex; flex-direction: column; gap: 20px; }
+  .intel-bar-row { display: grid; gap: 8px; }
+  .intel-bar-top {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  }
+  .intel-bar-name {
+    font-size: 11px; font-weight: 500; color: var(--silver-light); letter-spacing: 0.04em;
+  }
+  .intel-bar-val {
+    font-family: var(--font-display); font-size: 1.05rem;
+    color: var(--gold); line-height: 1;
+  }
+  .intel-bar-track {
+    height: 4px; background: rgba(255,255,255,0.05); overflow: hidden;
+  }
+  .intel-bar-fill {
+    height: 100%; background: var(--gold-gradient);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 1.3s var(--ease-out-expo);
+  }
+  .visible .intel-bar-fill { transform: scaleX(1); }
+  .intel-bar-row:nth-child(1) .intel-bar-fill { transition-delay: 0.10s; }
+  .intel-bar-row:nth-child(2) .intel-bar-fill { transition-delay: 0.20s; }
+  .intel-bar-row:nth-child(3) .intel-bar-fill { transition-delay: 0.30s; }
+  .intel-bar-row:nth-child(4) .intel-bar-fill { transition-delay: 0.40s; }
+  .intel-bar-row:nth-child(5) .intel-bar-fill { transition-delay: 0.50s; }
+
+  .intel-footnote {
+    margin-top: 28px; padding-top: 18px;
+    border-top: 1px solid var(--glass-border);
+    font-size: 9.5px; color: var(--text-muted); line-height: 1.6;
+    font-weight: 300; letter-spacing: 0.03em;
+  }
+
+  @media (max-width: 1024px) {
+    .intel-header { grid-template-columns: 1fr; gap: 24px; }
+    .intel-board { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    #intel { padding: 80px 0; }
+    .intel-panel { padding: 26px 20px; }
+  }
+
+  /* ══ CINEMATIC MOTION LAYER ══ */
+
+  /* Curtain wipe: content is unveiled rather than faded in */
+  .reveal-wipe {
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 1.05s var(--ease-out-expo);
+  }
+  .reveal-wipe.visible { clip-path: inset(0 0 0 0); }
+
+  /* Hairline that draws itself across a section head */
+  .rule-draw {
+    height: 1px; width: 100%;
+    background: linear-gradient(90deg, var(--gold-dim), transparent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 1.2s var(--ease-out-expo);
+  }
+  .rule-draw.visible { transform: scaleX(1); }
+
+  /* Magnetic buttons — JS writes the offset, CSS eases the return */
+  .magnetic { transition: transform 0.4s var(--ease-out-expo); will-change: transform; }
+  .magnetic.is-pulled { transition: transform 0.12s linear; }
+
+  /* Parallax drift, driven by scroll position */
+  .parallax { will-change: transform; }
+
+  /* Numerals in stat blocks settle upward as they count */
+  .proof-num, .stat-block-num { display: block; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-wipe { clip-path: none !important; }
+    .rule-draw { transform: scaleX(1) !important; }
+    .magnetic { transform: none !important; }
+    .parallax { transform: none !important; }
+  }
+
   /* ── PREFERS REDUCED MOTION ── */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -1085,12 +1256,17 @@
     .proof-stat { flex: 1 1 45%; }
   }
 
-  @media (max-width: 768px) {
-    nav { padding: 16px 20px; }
-    nav.scrolled { padding: 14px 20px; }
+  /* Six nav items + CTA need more room than 768px allows — switch to the
+     overlay before the links start colliding with the logo. */
+  @media (max-width: 980px) {
     .nav-links, .nav-cta { display: none; }
     .nav-hamburger { display: flex; }
     .nav-mobile-overlay { display: flex; }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    nav.scrolled { padding: 14px 20px; }
     .section-inner { padding: 0 20px; }
     #about, #divisions, #presence, #credibility, #services, #process { padding: 80px 0; }
     #cta { padding: 80px 0; }
@@ -1159,7 +1335,7 @@
     margin-bottom: 10px;
   }
   .case-title {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: clamp(1.1rem, 2vw, 1.4rem);
     color: var(--white); line-height: 1.25; margin-bottom: 16px;
     font-weight: 400;
@@ -1177,7 +1353,7 @@
     text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
   }
   .case-result-value {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: 1.6rem; color: var(--gold); line-height: 1;
     margin-bottom: 4px;
   }
@@ -1205,13 +1381,13 @@
     display: flex; gap: 40px; align-items: flex-start;
   }
   .testimonial-quote-mark {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: 5rem; color: rgba(201,168,76,0.2);
     line-height: 0.7; flex-shrink: 0; margin-top: 8px;
   }
   .testimonial-body { flex: 1; }
   .testimonial-text {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: clamp(1rem, 2vw, 1.25rem);
     color: var(--silver-light); line-height: 1.55;
     font-style: italic; margin-bottom: 20px;
@@ -1224,7 +1400,7 @@
     background: linear-gradient(135deg, var(--gold-dim), var(--navy-mid));
     border: 1px solid rgba(201,168,76,0.3);
     display: flex; align-items: center; justify-content: center;
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: 1rem; color: var(--gold); flex-shrink: 0;
   }
   .testimonial-name {
@@ -1270,7 +1446,7 @@
     padding: 4px 10px;
   }
   .insight-title {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: clamp(1rem, 1.8vw, 1.3rem);
     color: var(--white); line-height: 1.3;
     font-weight: 400; margin-bottom: 14px; flex: 1;
@@ -1352,7 +1528,7 @@
     height: 2px; background: var(--gold-gradient);
   }
   .form-title {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: 1.4rem; color: var(--white); margin-bottom: 8px; font-weight: 400;
   }
   .form-subtitle {
@@ -1371,7 +1547,7 @@
   .form-group textarea {
     width: 100%; background: rgba(255,255,255,0.03);
     border: 1px solid var(--glass-border);
-    color: var(--white); font-family: 'Manrope', sans-serif;
+    color: var(--white); font-family: var(--font-body);
     font-size: 13px; font-weight: 300;
     padding: 12px 16px;
     transition: border-color 0.3s, background 0.3s;
@@ -1419,7 +1595,7 @@
   }
   .form-success-icon svg { width: 20px; height: 20px; stroke: var(--gold); }
   .form-success h3 {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: var(--font-display);
     font-size: 1.3rem; color: var(--white); margin-bottom: 8px; font-weight: 400;
   }
   .form-success p { font-size: 12px; color: var(--silver); font-weight: 300; line-height: 1.6; }
@@ -1473,6 +1649,7 @@
     <li><a href="#about">About</a></li>
     <li><a href="#divisions">Divisions</a></li>
     <li><a href="#presence">Presence</a></li>
+    <li><a href="#intel">Intelligence</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#cta">Contact</a></li>
   </ul>
@@ -1492,6 +1669,7 @@
     <li><a href="#about">About</a></li>
     <li><a href="#divisions">Divisions</a></li>
     <li><a href="#presence">Presence</a></li>
+    <li><a href="#intel">Intelligence</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#cta">Contact</a></li>
   </ul>
@@ -1506,35 +1684,12 @@
   <div class="hero-accent-line" aria-hidden="true"></div>
 
   <div class="hero-content" id="main-content">
-    <div class="hero-logo-mark" style="margin-bottom:28px;animation:heroFadeIn 1.2s 0.05s cubic-bezier(0.16,1,0.3,1) both;" aria-hidden="true">
-      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:80px;height:80px;margin:0 auto;display:block;" focusable="false">
-        <defs>
-          <linearGradient id="heroLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#c9a84c"/>
-            <stop offset="50%" stop-color="#e4c97e"/>
-            <stop offset="100%" stop-color="#9a6e28"/>
-          </linearGradient>
-        </defs>
-        <path d="M8 70 L8 14 L40 50 L72 14 L72 70" stroke="url(#heroLogoGrad)" stroke-width="4" stroke-linejoin="miter" stroke-linecap="square" fill="none"/>
-        <path d="M18 66 L18 26 L62 66 L62 26" stroke="url(#heroLogoGrad)" stroke-width="2.8" stroke-linejoin="miter" stroke-linecap="square" fill="none" opacity="0.8"/>
-        <line x1="8" y1="70" x2="72" y2="70" stroke="url(#heroLogoGrad)" stroke-width="2" stroke-linecap="square"/>
-      </svg>
-    </div>
-    <div class="hero-brand-name" style="margin-bottom:8px;animation:heroFadeIn 1.2s 0.15s cubic-bezier(0.16,1,0.3,1) both;">
-      <span style="display:block;font-size:clamp(0.75rem,1.4vw,0.95rem);font-weight:800;letter-spacing:0.42em;text-transform:uppercase;background:var(--gold-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">MAXNOVA &amp; LUCI</span>
-    </div>
-    <div class="hero-brand-sub" style="display:flex;align-items:center;gap:14px;justify-content:center;margin-bottom:36px;animation:heroFadeIn 1.2s 0.2s cubic-bezier(0.16,1,0.3,1) both;" aria-hidden="true">
-      <div style="flex:1;max-width:60px;height:1px;background:var(--gold-dim);"></div>
-      <span style="font-size:9px;font-weight:400;letter-spacing:0.45em;color:var(--silver);text-transform:uppercase;">GLOBAL LLC</span>
-      <div style="flex:1;max-width:60px;height:1px;background:var(--gold-dim);"></div>
-    </div>
-
-    <div class="hero-eyebrow" style="margin-bottom:40px;">AMERICAS &nbsp;•&nbsp; ASIA &nbsp;•&nbsp; GLOBAL</div>
+    <div class="hero-eyebrow">AMERICAS &nbsp;•&nbsp; ASIA &nbsp;•&nbsp; GLOBAL</div>
 
     <h1 class="hero-headline">
-      Your business is ready<br>
-      for global scale.<br>
-      <em>We build the path.</em>
+      <span class="line-mask"><span>Your business is ready</span></span>
+      <span class="line-mask"><span>for global scale.</span></span>
+      <span class="line-mask"><span><em>We build the path.</em></span></span>
     </h1>
     <p class="hero-sub">
       Mid-market companies in the Americas and beyond trust MaxNova &amp; Luci Global to turn international complexity into competitive advantage — from Amazon FBA to full market entry across 5+ geographies.
@@ -1600,7 +1755,7 @@
           <span class="about-pill">Digital Commerce</span>
         </div>
       </div>
-      <div class="about-visual reveal">
+      <div class="about-visual reveal parallax" data-depth="0.07">
         <div class="about-card">
           <div class="about-card-number" aria-hidden="true">01</div>
           <div class="stat-item">
@@ -1630,7 +1785,7 @@
     <h2 class="section-title reveal">Five pillars of<br><em>global excellence</em></h2>
     <p class="section-sub reveal">Each division is engineered for enterprise performance — built to scale, designed to lead.</p>
 
-    <div class="divisions-grid reveal">
+    <div class="divisions-grid reveal reveal-wipe">
       <!-- Global Commerce -->
       <div class="division-card">
         <div class="div-top-line" aria-hidden="true"></div>
@@ -1742,7 +1897,7 @@
           </div>
         </div>
       </div>
-      <div class="world-map-container reveal">
+      <div class="world-map-container reveal parallax" data-depth="0.10">
         <svg class="world-map-svg" viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg" fill="none" role="img" aria-label="World map showing MaxNova global presence">
           <defs>
             <linearGradient id="mapGrad" x1="0" y1="0" x2="1" y2="1">
@@ -1793,6 +1948,143 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<div class="gold-divider" aria-hidden="true"></div>
+
+<!-- MARKET INTELLIGENCE -->
+<section id="intel">
+  <div class="section-inner">
+    <div class="intel-header">
+      <div class="reveal">
+        <div class="section-label">Market Intelligence</div>
+        <h2 class="section-title">The markets we<br><em>operate inside</em></h2>
+      </div>
+      <p class="reveal">We don't advise on markets we haven't worked in. These are the corridors where we hold active operations, partner networks, and in-country commercial relationships.</p>
+    </div>
+
+    <div class="intel-board reveal">
+
+      <!-- Panel: cross-border commerce growth -->
+      <div class="intel-panel">
+        <div class="intel-panel-head">
+          <div>
+            <div class="intel-panel-title">Cross-Border E-Commerce Growth</div>
+            <div class="intel-panel-meta">Indexed, LATAM → U.S. corridor</div>
+          </div>
+          <div class="intel-live">Tracking</div>
+        </div>
+
+        <svg class="intel-chart" viewBox="0 0 480 210" role="img"
+             aria-label="Line chart showing indexed growth of the LATAM to U.S. cross-border commerce corridor rising from 100 to 214 between 2021 and 2026, compared with a slower global average rising to 141.">
+          <defs>
+            <linearGradient id="areaGold" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#c9a84c" stop-opacity="0.22"/>
+              <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+
+          <g class="chart-grid">
+            <line x1="42" y1="20"  x2="470" y2="20"/>
+            <line x1="42" y1="62"  x2="470" y2="62"/>
+            <line x1="42" y1="104" x2="470" y2="104"/>
+            <line x1="42" y1="146" x2="470" y2="146"/>
+            <line x1="42" y1="170" x2="470" y2="170"/>
+          </g>
+
+          <g class="chart-axis-label" text-anchor="end">
+            <text x="34" y="24">220</text>
+            <text x="34" y="108">160</text>
+            <text x="34" y="174">100</text>
+          </g>
+
+          <path class="chart-area" fill="url(#areaGold)"
+                d="M60,158 L142,140 L224,112 L306,80 L388,48 L462,26 L462,170 L60,170 Z"/>
+
+          <path class="chart-line" style="--len:520" stroke="#6b7a94" stroke-opacity="0.75"
+                d="M60,158 L142,152 L224,141 L306,128 L388,116 L462,106"/>
+
+          <path class="chart-line" style="--len:520" stroke="#c9a84c"
+                d="M60,158 L142,140 L224,112 L306,80 L388,48 L462,26"/>
+
+          <g class="chart-dot">
+            <circle cx="462" cy="26" r="4.5" fill="#c9a84c"/>
+            <circle cx="462" cy="26" r="9" fill="none" stroke="#c9a84c" stroke-opacity="0.35"/>
+          </g>
+
+          <g class="chart-axis-label" text-anchor="middle">
+            <text x="60"  y="196">2021</text>
+            <text x="163" y="196">2022</text>
+            <text x="265" y="196">2024</text>
+            <text x="368" y="196">2025</text>
+            <text x="458" y="196">2026</text>
+          </g>
+        </svg>
+
+        <div class="chart-legend">
+          <span class="chart-legend-item">
+            <span class="chart-legend-swatch" style="background:#c9a84c"></span>
+            LATAM → U.S. corridor
+          </span>
+          <span class="chart-legend-item">
+            <span class="chart-legend-swatch" style="background:#6b7a94"></span>
+            Global average
+          </span>
+        </div>
+      </div>
+
+      <!-- Panel: where engagements concentrate -->
+      <div class="intel-panel">
+        <div class="intel-panel-head">
+          <div>
+            <div class="intel-panel-title">Engagement Concentration</div>
+            <div class="intel-panel-meta">Share of active work</div>
+          </div>
+        </div>
+
+        <div class="intel-bars">
+          <div class="intel-bar-row">
+            <div class="intel-bar-top">
+              <span class="intel-bar-name">Digital Commerce &amp; FBA</span>
+              <span class="intel-bar-val">32%</span>
+            </div>
+            <div class="intel-bar-track"><div class="intel-bar-fill" style="width:32%"></div></div>
+          </div>
+          <div class="intel-bar-row">
+            <div class="intel-bar-top">
+              <span class="intel-bar-name">Market Entry &amp; Expansion</span>
+              <span class="intel-bar-val">26%</span>
+            </div>
+            <div class="intel-bar-track"><div class="intel-bar-fill" style="width:26%"></div></div>
+          </div>
+          <div class="intel-bar-row">
+            <div class="intel-bar-top">
+              <span class="intel-bar-name">Telecom Advisory</span>
+              <span class="intel-bar-val">18%</span>
+            </div>
+            <div class="intel-bar-track"><div class="intel-bar-fill" style="width:18%"></div></div>
+          </div>
+          <div class="intel-bar-row">
+            <div class="intel-bar-top">
+              <span class="intel-bar-name">Import / Export Operations</span>
+              <span class="intel-bar-val">14%</span>
+            </div>
+            <div class="intel-bar-track"><div class="intel-bar-fill" style="width:14%"></div></div>
+          </div>
+          <div class="intel-bar-row">
+            <div class="intel-bar-top">
+              <span class="intel-bar-name">Digital Transformation</span>
+              <span class="intel-bar-val">10%</span>
+            </div>
+            <div class="intel-bar-track"><div class="intel-bar-fill" style="width:10%"></div></div>
+          </div>
+        </div>
+
+        <p class="intel-footnote">Figures reflect the composition of MaxNova &amp; Luci Global's own engagement portfolio and corridor activity. Directional, and reviewed each quarter.</p>
+      </div>
+
     </div>
   </div>
 </section>
@@ -1857,7 +2149,7 @@
       <p class="reveal">Every engagement is different. What stays consistent is the depth of execution — from first market contact to operational reality. Client names are kept confidential by design.</p>
     </div>
 
-    <div class="cases-grid reveal">
+    <div class="cases-grid reveal reveal-wipe">
       <!-- Case 1 -->
       <div class="case-card">
         <div class="case-tag">Digital Commerce</div>
@@ -1927,7 +2219,7 @@
     <h2 class="section-title reveal">How an engagement<br><em>actually works</em></h2>
     <p class="section-sub reveal">No assumptions. No templates. A structured process built for international complexity — designed to transfer capability, not create dependency.</p>
 
-    <div class="process-steps reveal">
+    <div class="process-steps reveal reveal-wipe">
       <div class="process-step">
         <div class="process-step-num" aria-hidden="true">01</div>
         <div class="process-step-title">Discovery &amp; Alignment</div>
@@ -2045,7 +2337,7 @@
       <p class="reveal">Strategic perspectives from practitioners operating in these markets daily — on commerce, expansion, and the business of going global.</p>
     </div>
 
-    <div class="insights-grid reveal">
+    <div class="insights-grid reveal reveal-wipe">
       <!-- Insight 1 -->
       <div class="insight-card">
         <div class="insight-arrow" aria-hidden="true"></div>
@@ -2432,8 +2724,10 @@ document.addEventListener('keydown', e => {
 // ── REVEAL ON SCROLL ──
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+const REVEAL_SELECTOR = '.reveal, .reveal-wipe, .rule-draw';
+
 if (prefersReducedMotion) {
-  document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+  document.querySelectorAll(REVEAL_SELECTOR).forEach(el => el.classList.add('visible'));
 } else {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
@@ -2444,7 +2738,7 @@ if (prefersReducedMotion) {
     });
   }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  document.querySelectorAll(REVEAL_SELECTOR).forEach(el => observer.observe(el));
 
   // Stagger for grids
   document.querySelectorAll('.divisions-grid, .services-grid, .stats-mosaic, .process-steps').forEach(grid => {
@@ -2538,6 +2832,62 @@ document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe
   form.querySelectorAll('input, textarea').forEach(el => {
     el.addEventListener('input', () => { el.style.borderColor = ''; });
   });
+})();
+
+// ── MAGNETIC BUTTONS ──
+(function() {
+  if (prefersReducedMotion) return;
+  if (!window.matchMedia('(hover: hover)').matches) return;
+
+  const PULL = 0.32;   // fraction of cursor offset the element follows
+  const RADIUS = 70;   // px beyond the element edge where the pull begins
+
+  document.querySelectorAll('.btn-primary, .btn-secondary, .nav-cta, .form-submit')
+    .forEach(el => {
+      el.classList.add('magnetic');
+
+      el.addEventListener('pointermove', e => {
+        const r = el.getBoundingClientRect();
+        const dx = e.clientX - (r.left + r.width / 2);
+        const dy = e.clientY - (r.top + r.height / 2);
+        el.classList.add('is-pulled');
+        el.style.transform = `translate(${dx * PULL}px, ${dy * PULL}px)`;
+      });
+
+      el.addEventListener('pointerleave', () => {
+        el.classList.remove('is-pulled');
+        el.style.transform = '';
+      });
+    });
+})();
+
+// ── SCROLL PARALLAX ──
+(function() {
+  if (prefersReducedMotion) return;
+
+  const layers = document.querySelectorAll('.parallax');
+  if (!layers.length) return;
+
+  let ticking = false;
+
+  function apply() {
+    const vh = window.innerHeight;
+    layers.forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh) return;
+      const depth = parseFloat(el.dataset.depth) || 0.12;
+      // progress: -1 (entering from below) → 1 (leaving above)
+      const progress = (r.top + r.height / 2 - vh / 2) / (vh / 2);
+      el.style.transform = `translate3d(0, ${progress * depth * 100}px, 0)`;
+    });
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) { ticking = true; requestAnimationFrame(apply); }
+  }, { passive: true });
+
+  apply();
 })();
 
 // ── PARTICLE SYSTEM ──
