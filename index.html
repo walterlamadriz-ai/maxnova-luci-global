@@ -8,21 +8,21 @@
 <!-- SEO -->
 <meta name="description" content="MaxNova &amp; Luci Global LLC — Strategic consulting, Amazon FBA, international market entry, and digital transformation across USA, LATAM and Asia-Pacific. 14+ years, 5+ markets.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://maxnovaluci.com/">
+<link rel="canonical" href="https://maxnova-luci-global.vercel.app/">
 
 <!-- Open Graph -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://maxnovaluci.com/">
+<meta property="og:url" content="https://maxnova-luci-global.vercel.app/">
 <meta property="og:title" content="MaxNova &amp; Luci Global LLC | International Business Platform">
 <meta property="og:description" content="We help mid-market companies enter and scale across international markets — with operational depth to execute, not just advise.">
-<meta property="og:image" content="https://maxnovaluci.com/og-image.jpg">
+<meta property="og:image" content="https://maxnova-luci-global.vercel.app/og-image.jpg">
 <meta property="og:locale" content="en_US">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="MaxNova &amp; Luci Global LLC">
 <meta name="twitter:description" content="International business platform for companies ready to compete globally.">
-<meta name="twitter:image" content="https://maxnovaluci.com/og-image.jpg">
+<meta name="twitter:image" content="https://maxnova-luci-global.vercel.app/og-image.jpg">
 
 <!-- Fonts: non-blocking preload -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,7 +36,7 @@
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "MaxNova & Luci Global LLC",
-  "url": "https://maxnovaluci.com",
+  "url": "https://maxnova-luci-global.vercel.app",
   "description": "International business platform connecting digital commerce, strategic consulting and technology solutions across global markets.",
   "contactPoint": {
     "@type": "ContactPoint",
@@ -67,7 +67,7 @@
     --blue-electric: #3b82f6;
     --blue-glow: rgba(59,130,246,0.18);
     --white: #f4f6fa;
-    --text-muted: #6b7a94;
+    --text-muted: #8794ab;
     --glass: rgba(255,255,255,0.04);
     --glass-border: rgba(255,255,255,0.07);
     --gold-gradient: linear-gradient(135deg, #c9a84c, #e4c97e, #a07830);
@@ -160,9 +160,17 @@
     #cursor, #cursor-dot { display: none; }
     * { cursor: auto; }
   }
+  /* Scoped: only applied once JS confirms the custom cursor is running, and
+     never over text-entry controls that need their native affordance. */
   @media (hover: hover) {
-    * { cursor: none; }
-    a, button, [role="button"] { cursor: none; }
+    html.custom-cursor body { cursor: none; }
+    html.custom-cursor a,
+    html.custom-cursor button,
+    html.custom-cursor [role="button"] { cursor: none; }
+    html.custom-cursor input,
+    html.custom-cursor textarea,
+    html.custom-cursor select,
+    html.custom-cursor [contenteditable] { cursor: auto; }
   }
 
   /* ── SCROLLBAR ── */
@@ -187,8 +195,7 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 22px 60px;
     border-bottom: 1px solid transparent;
-    transition: all 0.5s ease;
-    backdrop-filter: blur(0px);
+    transition: background 0.3s ease, padding 0.3s ease, border-color 0.3s ease;
   }
   nav.scrolled {
     background: rgba(5,6,8,0.92);
@@ -293,11 +300,14 @@
     gap: 0;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.35s ease;
+    /* visibility keeps the closed menu out of the tab order */
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
   }
   .nav-mobile-overlay.is-open {
     opacity: 1;
     pointer-events: all;
+    visibility: visible;
   }
   .nav-mobile-overlay ul {
     list-style: none;
@@ -695,12 +705,16 @@
   .div-outcome {
     margin-top: 14px; padding-top: 14px;
     border-top: 1px solid rgba(201,168,76,0.12);
-    font-size: 10px; color: var(--gold-dim); line-height: 1.5; font-weight: 400;
+    font-size: 10px; color: var(--gold); line-height: 1.5; font-weight: 400;
     font-style: italic;
     opacity: 0; transform: translateY(4px);
     transition: opacity 0.3s, transform 0.3s;
   }
   .division-card:hover .div-outcome { opacity: 1; transform: translateY(0); }
+  /* Without hover there is no way to reveal it, so show it outright. */
+  @media (hover: none) {
+    .div-outcome { opacity: 1; transform: none; }
+  }
 
   .div-top-line {
     position: absolute; top: 0; left: 50%; transform: translateX(-50%);
@@ -916,7 +930,7 @@
   .process-note {
     display: inline-flex; align-items: center; gap: 10px;
     font-size: 10px; font-weight: 600; letter-spacing: 0.15em;
-    color: var(--gold-dim); text-transform: uppercase;
+    color: var(--gold); text-transform: uppercase;
   }
   .process-note::before, .process-note::after {
     content: ''; display: block; width: 24px; height: 1px; background: var(--gold-dim);
@@ -1075,7 +1089,7 @@
   .footer-tagline { display: flex; gap: 8px; margin-top: 24px; align-items: center; }
   .footer-tagline span {
     font-size: 8px; font-weight: 700; letter-spacing: 0.25em;
-    color: var(--gold-dim); text-transform: uppercase;
+    color: var(--gold); text-transform: uppercase;
   }
   .footer-tagline .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--gold-dim); }
 
@@ -1299,7 +1313,8 @@
     nav { padding: 16px 20px; }
     nav.scrolled { padding: 14px 20px; }
     .section-inner { padding: 0 20px; }
-    #about, #divisions, #presence, #credibility, #services, #process { padding: 80px 0; }
+    #about, #divisions, #presence, #credibility, #services, #process,
+    #cases, #insights { padding: 80px 0; }
     #cta { padding: 80px 0; }
     .divisions-grid { grid-template-columns: 1fr 1fr; }
     .services-grid { grid-template-columns: 1fr 1fr; }
@@ -1600,7 +1615,7 @@
     outline: none; appearance: none;
   }
   .form-group select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7a94' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238794ab' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 14px center;
     padding-right: 36px;
@@ -1614,7 +1629,7 @@
     background: rgba(201,168,76,0.03);
   }
   .form-group input::placeholder,
-  .form-group textarea::placeholder { color: var(--text-muted); opacity: 0.6; }
+  .form-group textarea::placeholder { color: var(--text-muted); opacity: 1; }
   .form-submit {
     width: 100%; padding: 15px 24px;
     font-size: 10px; font-weight: 700; letter-spacing: 0.2em;
@@ -1729,7 +1744,7 @@
   <canvas id="particles" aria-hidden="true"></canvas>
   <div class="hero-accent-line" aria-hidden="true"></div>
 
-  <div class="hero-content" id="main-content">
+  <div class="hero-content" id="main-content" tabindex="-1">
     <div class="hero-eyebrow">AMERICAS &nbsp;•&nbsp; ASIA &nbsp;•&nbsp; GLOBAL</div>
 
     <h1 class="hero-headline">
@@ -2468,7 +2483,7 @@
 </section>
 
 <!-- CTA + CONTACT FORM -->
-<section id="cta" style="padding: 120px 0; background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(201,168,76,0.05) 0%, transparent 70%), var(--navy); border-top: 1px solid var(--glass-border);">
+<section id="cta">
   <div class="section-inner">
     <div class="contact-grid">
 
@@ -2700,7 +2715,7 @@ const progressBar = document.getElementById('scroll-progress');
 window.addEventListener('scroll', () => {
   const scrollTop = window.scrollY;
   const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-  progressBar.style.width = (scrollTop / docHeight * 100) + '%';
+  progressBar.style.width = (scrollTop / Math.max(docHeight, 1) * 100) + '%';
 }, { passive: true });
 
 // ── NAV SCROLL ──
@@ -2713,25 +2728,57 @@ window.addEventListener('scroll', () => {
 const navToggle = document.getElementById('navToggle');
 const mobileMenu = document.getElementById('mobileMenu');
 
+const menuLinks = [...mobileMenu.querySelectorAll('a')];
+
+function menuIsOpen() { return mobileMenu.classList.contains('is-open'); }
+
+function openMobileMenu() {
+  mobileMenu.classList.add('is-open');
+  navToggle.setAttribute('aria-expanded', 'true');
+  navToggle.setAttribute('aria-label', 'Close navigation menu');
+  document.body.style.overflow = 'hidden';
+  // Move focus in so the dialog's aria-modal claim is actually true.
+  menuLinks[0]?.focus();
+}
+
 function closeMobileMenu() {
+  if (!menuIsOpen()) return;
   mobileMenu.classList.remove('is-open');
   navToggle.setAttribute('aria-expanded', 'false');
+  navToggle.setAttribute('aria-label', 'Open navigation menu');
   document.body.style.overflow = '';
+  navToggle.focus();
 }
 
 navToggle.addEventListener('click', () => {
-  const isOpen = mobileMenu.classList.toggle('is-open');
-  navToggle.setAttribute('aria-expanded', String(isOpen));
-  document.body.style.overflow = isOpen ? 'hidden' : '';
+  menuIsOpen() ? closeMobileMenu() : openMobileMenu();
 });
 
-mobileMenu.querySelectorAll('a').forEach(link => {
-  link.addEventListener('click', closeMobileMenu);
+menuLinks.forEach(link => {
+  // Let the fragment navigation happen, then close and release focus.
+  link.addEventListener('click', () => {
+    mobileMenu.classList.remove('is-open');
+    navToggle.setAttribute('aria-expanded', 'false');
+    navToggle.setAttribute('aria-label', 'Open navigation menu');
+    document.body.style.overflow = '';
+  });
 });
 
-// Close on Escape
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeMobileMenu();
+  if (!menuIsOpen()) return;
+
+  if (e.key === 'Escape') { closeMobileMenu(); return; }
+
+  // Trap Tab inside the open dialog.
+  if (e.key === 'Tab') {
+    const focusable = [navToggle, ...menuLinks];
+    const first = focusable[0], last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault(); first.focus();
+    }
+  }
 });
 
 // ── CUSTOM CURSOR ──
@@ -2742,6 +2789,8 @@ document.addEventListener('keydown', e => {
 
   const cursor = document.getElementById('cursor');
   const dot = document.getElementById('cursor-dot');
+  if (!cursor || !dot) return;
+  document.documentElement.classList.add('custom-cursor');
   let mouseX = 0, mouseY = 0;
   let curX = 0, curY = 0;
   let animId;
@@ -2901,18 +2950,28 @@ document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe
     .forEach(el => {
       el.classList.add('magnetic');
 
+      let rect = null;
+
+      el.addEventListener('pointerenter', e => {
+        if (e.pointerType !== 'mouse') return;
+        rect = el.getBoundingClientRect();   // read once, not per move
+      });
+
       el.addEventListener('pointermove', e => {
-        const r = el.getBoundingClientRect();
-        const dx = e.clientX - (r.left + r.width / 2);
-        const dy = e.clientY - (r.top + r.height / 2);
+        if (e.pointerType !== 'mouse' || !rect) return;
+        const dx = e.clientX - (rect.left + rect.width / 2);
+        const dy = e.clientY - (rect.top + rect.height / 2);
         el.classList.add('is-pulled');
         el.style.transform = `translate(${dx * PULL}px, ${dy * PULL}px)`;
       });
 
-      el.addEventListener('pointerleave', () => {
+      const release = () => {
+        rect = null;
         el.classList.remove('is-pulled');
         el.style.transform = '';
-      });
+      };
+      el.addEventListener('pointerleave', release);
+      el.addEventListener('pointercancel', release);
     });
 })();
 
@@ -3149,22 +3208,40 @@ document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe
     animId = requestAnimationFrame(loop);
   }
 
-  // Pause when not visible
+  // A single `running` flag owns the loop. Without it, IntersectionObserver
+  // firing on observe() would overwrite animId and strand an uncancellable
+  // second loop alongside the first.
+  let running = false;
+  let heroVisible = true;
+
+  function start() {
+    if (running || document.hidden || !heroVisible) return;
+    running = true;
+    animId = requestAnimationFrame(loop);
+  }
+  function stop() {
+    running = false;
+    cancelAnimationFrame(animId);
+  }
+
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) cancelAnimationFrame(animId);
-    else animId = requestAnimationFrame(loop);
+    if (document.hidden) stop(); else start();
   });
 
-  // Pause when hero is out of viewport
   const heroObserver = new IntersectionObserver(([entry]) => {
-    if (!entry.isIntersecting) cancelAnimationFrame(animId);
-    else animId = requestAnimationFrame(loop);
+    heroVisible = entry.isIntersecting;
+    if (heroVisible) start(); else stop();
   });
   heroObserver.observe(canvas);
 
-  window.addEventListener('resize', resize, { passive: true });
+  let resizeT;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(resize, 150);
+  }, { passive: true });
+
   init();
-  animId = requestAnimationFrame(loop);
+  start();
 })();
 </script>
 </body>
